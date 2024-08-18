@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Hello World Extension",
+  "version": "1.0",
+  "description": "A simple Chrome extension that logs 'Hello World' to the console.",
+  "icons": {
+    "48": "icon.png"
+  },
+  "browser_action": {
+    "default_icon": {
+      "48": "icon.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab"]
+}

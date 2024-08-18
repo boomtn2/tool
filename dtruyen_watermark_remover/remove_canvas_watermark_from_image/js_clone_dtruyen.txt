@@ -1,0 +1,122 @@
+
+
+let chapterContent = document.querySelector("#chapter-content");
+let spanTexts  = [];
+let chapterTitleElement = document.querySelector(".chapter-title");
+let regex = /(Chương \d+)/;
+let title = chapterTitleElement.textContent || chapterTitleElement.innerText;
+let match = title.match(regex);
+title = match[1];
+let nameFile = title + ".txt";
+
+
+body();
+
+function saveTextAsFile(text, filename) {
+    let blob = new Blob([text], { type: "text/plain" });
+    let a = document.createElement("a");
+    a.style.display = "none";
+    document.body.appendChild(a);
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    document.body.removeChild(a);
+}
+
+
+
+
+function body(){
+if (chapterContent) {
+    // Lấy tất cả thẻ con
+    const allSpans = Array.from(chapterContent.querySelectorAll("*"));
+    
+    const container = document.querySelector('.bebi');
+ paragraphs = [];
+if(container!= null)
+{
+
+   paragraphs = Array.from(container.querySelectorAll('span'));
+    // Sắp xếp lại mảng các phần tử con theo thứ tự hiển thị
+    paragraphs.sort((a, b) => {
+        const styleA = getComputedStyle(a);
+        const styleB = getComputedStyle(b);
+        return styleA.order - styleB.order;
+    });
+}
+
+
+    // Lọc và lấy nội dung văn bản của các thẻ span không có bất kỳ thuộc tính và không có thẻ con <span> có class .bebi, và in ra
+    allSpans.forEach(span => {
+        if (span.tagName.toLowerCase() === "canvas") {
+            spanTexts.push(`${title} ${span.id}`);
+        
+        
+        } 
+         else if (span.tagName.toLowerCase() === "img"){
+             spanTexts.push(`${title}IMG`);
+        }
+        else {
+            if (span.attributes.length === 0 && !span.querySelector('span.bebi')) {
+                const content = span.textContent;
+                spanTexts.push(content);
+            }
+            if (span.querySelector('span.bebi')) {
+                paragraphs.forEach(paragraph => {
+                    const content = paragraph.textContent;
+                    spanTexts.push(content);
+                });
+            }
+        }
+    });
+
+let textToSave = spanTexts.join("\n");
+// Sử dụng hàm đã được định nghĩa ở trên để lưu văn bản
+saveTextAsFile(textToSave, nameFile);
+}
+}
+
+ 
+// AUto dowload
+function downloadCanvasAsJPEG(canvas, filename) {
+    // Tạo một canvas tạm thời với nền màu trắng
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height+140;
+    const ctx = tempCanvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';  // Màu trắng
+    ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+    ctx.drawImage(canvas, 0, 70);
+
+
+ // Thêm dòng chữ "canvas" vào góc dưới bên trái
+    ctx.fillStyle = '#000000';  // Màu đen
+    ctx.font = '60px Arial';
+    ctx.fillText("REP", 10, 60); 
+
+ // Thêm dòng chữ "canvas" vào góc dưới bên trái
+    ctx.fillStyle = '#000000';  // Màu đen
+    ctx.font = '60px Arial';
+    ctx.fillText(filename + " REP", 10, tempCanvas.height - 10); 
+
+    // Tạo URL tải về từ canvas tạm thời
+    const link = document.createElement('a');
+    link.download = filename+'.jpeg';
+    link.href = tempCanvas.toDataURL('image/jpeg');
+    document.body.appendChild(link); 
+    link.click();
+    document.body.removeChild(link); 
+}
+
+function downloadAllCanvases() {
+ 
+    var canvases = document.querySelectorAll("canvas");
+    canvases.forEach((canvas, index) => {
+        const filename = title+` ${canvas.id}`;
+        downloadCanvasAsJPEG(canvas, filename);
+    });
+}
+
+
+
