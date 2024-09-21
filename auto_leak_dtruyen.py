@@ -14,7 +14,7 @@ import save_file
 
 # init config
 chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument("--user-data-dir=/Users/PC/AppData/Local/Google/Chrome/User Data/")
+chrome_options.add_argument("--user-data-dir=/Users/Admin/AppData/Local/Google/Chrome/User Data")
 chrome_options.add_argument("--profile-directory=Default")
 
 driver = webdriver.Chrome(options=chrome_options)
